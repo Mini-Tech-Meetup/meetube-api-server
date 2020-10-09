@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: meetube-api-server
+  datasource:
+    url: jdbc:postgresql://${CONF_RDB_HOST}:${CONF_RDB_PORT}/${CONF_RDB_DATABASE}
+    username: ${CONF_RDB_USER}
+    password: ${CONF_RDB_PASSWORD}
+    hikari:
+      connection-timeout: 300000
+      connection-test-query: select 1
+      idle-timeout: 60000
+      max-lifetime: 1800000
+      minimum-idle: 10
+      maximum-pool-size: 30
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+logging:
+  level:
+    root: debug
