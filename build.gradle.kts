@@ -17,6 +17,7 @@ version = "1.0.0-SNAPSHOT"
 repositories {
     jcenter()
     mavenCentral()
+    maven(url = "https://csspeechstorage.blob.core.windows.net/maven/")
 }
 
 dependencies {
