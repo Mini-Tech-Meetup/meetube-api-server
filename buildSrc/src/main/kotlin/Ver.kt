@@ -8,5 +8,5 @@ object Ver {
     const val mockitoKotlin2 = "2.2.0"
     const val mockk = "1.9.3"
     const val springBoot = "2.2.1.RELEASE"
-    const val microsoftCognitiveServices = "1.12.1"
+    const val microsoftCognitiveServices = "1.13.0"
 }
