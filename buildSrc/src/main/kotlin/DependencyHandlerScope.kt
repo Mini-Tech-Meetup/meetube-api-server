@@ -21,3 +21,7 @@ fun DependencyHandlerScope.flyway(
     module: String,
     version: String = Ver.flyway
 ) = "org.flywaydb:flyway-$module:$version"
+
+fun DependencyHandlerScope.microsoftCognitiveServices(
+    version: String = Ver.microsoftCognitiveServices
+) = "com.microsoft.cognitiveservices.speech:client-sdk:$version"

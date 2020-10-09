@@ -24,6 +24,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8", Ver.kotlin))
     implementation(kotlin("reflect", Ver.kotlin))
     implementation(flyway("core"))
+    implementation(microsoftCognitiveServices())
 
     testImplementation(springBoot("starter-test")) {
         exclude(group = "junit", module = "junit")
