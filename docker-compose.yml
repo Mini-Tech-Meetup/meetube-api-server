@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - meetube-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=meetube
+      - POSTGRES_PASSWORD=postgresql
+      - POSTGRES_DB=meetube
+    ports:
+      - 20000:5432
+volumes:
+  meetube-data:

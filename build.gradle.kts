@@ -45,6 +45,23 @@ configure<KtlintExtension> {
 }
 
 tasks {
+    val dockerComposeUpDb = register<Exec>("dockerComposeUpDb") {
+        executable("docker-compose")
+        args("-f", "$projectDir/docker-compose.yml", "up", "-d", "db")
+    }
+
+    val dockerComposeDownDb = register<Exec>("dockerComposeDownDb") {
+        executable("docker-compose")
+        args("-f", "$projectDir/docker-compose.yml", "down", "--rmi", "local", "-v")
+    }
+
+    test {
+        useJUnitPlatform()
+
+        dependsOn(dockerComposeUpDb)
+        finalizedBy(dockerComposeDownDb)
+    }
+
     compileKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
