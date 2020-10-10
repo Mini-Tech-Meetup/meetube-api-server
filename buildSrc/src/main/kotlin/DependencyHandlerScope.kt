@@ -38,3 +38,11 @@ fun DependencyHandlerScope.queryDsl(
     module: String,
     version: String = Ver.queryDsl
 ) = "com.querydsl:$module:$version"
+
+fun DependencyHandlerScope.reactor(
+    module: String
+) = "io.projectreactor:reactor-$module:3.3.10.RELEASE"
+
+fun DependencyHandlerScope.jacksonModule(
+    module: String
+) = "com.fasterxml.jackson.module:jackson-module-$module"

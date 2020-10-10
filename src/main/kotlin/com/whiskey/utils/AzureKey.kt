@@ -1,9 +1,9 @@
 package com.whiskey.utils
 
 object AzureKey {
-    val videoIndexerKey = "KIKI" //
+    val videoIndexerKey = "VideoKey"
 
-    val StorageConnectionString = System.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    val StorageConnectionString = "StorageKey"
 
     const val StorageContainerName = "meetup-media"
 

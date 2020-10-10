@@ -1,84 +1,93 @@
 package com.whiskey.service
 
 import com.whiskey.client.MeetubeHttpClient
+import com.whiskey.entity.Video
+import com.whiskey.repository.AzureRepository
 import com.whiskey.utils.AzureKey
-import org.apache.http.HttpEntity
-import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.HttpMultipartMode
+import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.*
 import java.util.*
-import java.net.URLEncoder
 
 
 @Service
-class AzureVideoSerivce {
+class AzureVideoSerivce (private  val azureRepository: AzureRepository){
 
-    companion object{
-        var accountId = AzureKey.videoIndexerUserId;
+    companion object {
+        var accountId = AzureKey.videoIndexerUserId
         var location = "trial"; // replace with the account's location, or with “trial” if this is a trial account
-        val apiKey = AzureKey.videoIndexerKey;
-        var apiUrl = "https://api.videoindexer.ai/${location}/Accounts/${accountId}";
-
-        val header = mapOf<String,String>(
-            "x-ms-client-request-id" to  "",
+        val apiKey = AzureKey.videoIndexerKey
+        var apiUrl = "https://api.videoindexer.ai/$location/Accounts/$accountId"
+        val header = mapOf(
+            "x-ms-client-request-id" to "",
             "Ocp-Apim-Subscription-Key" to apiKey
         )
-
     }
     private val httpClient: MeetubeHttpClient = MeetubeHttpClient()
 
-    fun fileUpload(file: MultipartFile) {
+    fun getVideoIndexerInfomation (oldVideo:Video) : Video {
+        return  oldVideo
+    }
+
+    fun fileUpload(file: MultipartFile) : Video {
+        val tempFile = File(file.originalFilename)
+        tempFile.createNewFile()
+        val fos = FileOutputStream(tempFile)
+        fos.write(file.bytes)
+        fos.close()
         val uuid = UUID.randomUUID().toString()
-        getAccessToken()?.let {
-            val parameter = mapOf<String,String>(
+        val azurePath = azureRepository.upload(tempFile.absolutePath,uuid)
+
+
+        val videoId = getAccessToken()?.let {
+            val parameterForUpload = mapOf(
                 "name" to uuid,
                 "accessToken" to it,
                 "description" to "description",
                 "privacy" to "public",
+                "videoUrl" to (azurePath ?: ""),
                 "externalId" to uuid
             )
-            val builder: MultipartEntityBuilder = MultipartEntityBuilder.create()
 
-            builder.addBinaryBody("file", file.bytes, ContentType.APPLICATION_OCTET_STREAM,file.originalFilename)
-            val body = builder.build()
-
-            val a = httpClient.post("${apiUrl}/Videos",parameter, header,body)
-            val b = a.content.let { getStreamToString(it) }
-
-        }
-        getAccessToken()?.let {
-            val parameter = mapOf<String,String>(
+            httpClient.post("$apiUrl/Videos", parameterForUpload, header)?.content?.let { println(getStreamToString(it)) }
+            print("Upload Video")
+            val parameterForId = mapOf<String,String>(
                 "externalId" to uuid,
                 "accessToken" to it
             )
-            val a = httpClient.get("${apiUrl}/Videos/GetIdByExternalId",parameter, header)?.entity?.content
-            println(a?.let (::getStreamToString))
+            val content = httpClient.get("${apiUrl}/Videos/GetIdByExternalId",parameterForId, header)?.entity?.content
+            content?.let (::getStreamToString)
         }
+
+        tempFile.delete()
+
+        return Video(
+            videoId ?: uuid,
+            file.originalFilename ?: "Untitled",
+            null,
+            null,
+            null,
+            azurePath,
+            null
+        )
     }
 
     fun getAccessToken(): String? {
-        val parameter = mapOf<String,String>(
+        val parameter = mapOf(
             "allowEdit" to "true"
         )
-        val authUri = "https://api.videoindexer.ai/Auth/${location}/Accounts/${accountId}/AccessToken"
-        val content =  httpClient.get(authUri,parameter, header)?.entity?.content
+        val authUri = "https://api.videoindexer.ai/Auth/$location/Accounts/$accountId/AccessToken"
+        val content = httpClient.get(authUri, parameter, header)?.entity?.content
 
-
-        return content?.let (::getStreamToString)
-
+        return content?.let(::getStreamToString)
     }
 
-    fun getStreamToString(content:InputStream) :String{
-        val isr = InputStreamReader(content);
-        val rd = BufferedReader(isr);
+    fun getStreamToString(content: InputStream): String {
+        val isr = InputStreamReader(content)
+        val rd = BufferedReader(isr)
 
-        return  rd.readLine().trim().replace("\"","")
+        return rd.readLine().trim().replace("\"", "")
     }
-
 }
