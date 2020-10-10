@@ -41,7 +41,7 @@ fun DependencyHandlerScope.queryDsl(
 
 fun DependencyHandlerScope.reactor(
     module: String
-) = "io.projectreactor:reactor-$module"
+) = "io.projectreactor:reactor-$module:3.3.10.RELEASE"
 
 fun DependencyHandlerScope.jacksonModule(
     module: String
