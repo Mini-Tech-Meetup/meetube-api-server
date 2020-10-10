@@ -1,7 +1,7 @@
 package com.whiskey.utils
 
 object AzureKey {
-    val videoIndexerKey = "VideoKey" 
+    val videoIndexerKey = "VideoKey"
 
     val StorageConnectionString = "StorageKey"
 
