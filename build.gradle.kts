@@ -51,6 +51,7 @@ dependencies {
     implementation(group = "io.netty", name = "netty-all",version = "4.1.52.Final",ext = "jar")
     implementation(group = "io.projectreactor.netty", name = "reactor-netty",version = "0.9.12.RELEASE",ext = "jar")
     implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml",version = "2.11.2",ext = "jar")
+    implementation(group = "org.codehaus.woodstox", name = "stax2-api",version = "3.1.4",ext = "jar")
     implementation(group = "org.apache.httpcomponents", name = "httpmime", version = "4.5.13", ext = "jar")
 
     testImplementation(springBoot("starter-test")) {
