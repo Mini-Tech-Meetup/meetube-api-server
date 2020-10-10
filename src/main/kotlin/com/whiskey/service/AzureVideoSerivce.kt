@@ -1,6 +1,7 @@
 package com.whiskey.service
 
 import com.whiskey.client.MeetubeHttpClient
+import com.whiskey.repository.AzureRepository
 import com.whiskey.utils.AzureKey
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.CloseableHttpResponse
@@ -17,7 +18,7 @@ import java.util.*
 
 
 @Service
-class AzureVideoSerivce {
+class AzureVideoSerivce (private  val azureRepository: AzureRepository){
 
     companion object{
         var accountId = AzureKey.videoIndexerUserId;
@@ -33,7 +34,10 @@ class AzureVideoSerivce {
     }
     private val httpClient: MeetubeHttpClient = MeetubeHttpClient()
 
+
     fun fileUpload(file: MultipartFile) {
+
+        azureRepository.Upload(file.inputStream,file.size,"1312323")
 
         getAccessToken()?.let {
             val parameter = mapOf<String,String>(

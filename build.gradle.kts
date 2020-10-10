@@ -28,6 +28,9 @@ dependencies {
     implementation(apacheHttpClient())
     implementation(group = "com.microsoft.cognitiveservices.speech", name = "client-sdk", version = "1.13.0", ext = "jar")
     implementation(group = "com.azure", name = "azure-storage-blob", version = "12.8.0", ext = "jar")
+    implementation(group = "com.azure", name = "azure-core",version = "1.9.0",ext = "jar")
+    implementation(group = "com.azure", name = "azure-storage-common",version = "12.8.0",ext = "jar")
+    implementation(group = "com.azure", name = "azure-storage-queue",version = "12.6.0",ext = "jar")
     implementation(group = "org.apache.httpcomponents", name = "httpmime", version = "4.5.13", ext = "jar")
 
     testImplementation(springBoot("starter-test")) {
