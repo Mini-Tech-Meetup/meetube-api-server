@@ -10,4 +10,5 @@ object Ver {
     const val springBoot = "2.2.1.RELEASE"
     const val microsoftCognitiveServices = "1.13.0"
     const val apacheHttpClient = "4.5.12"
+    const val postgres = "42.2.8"
 }

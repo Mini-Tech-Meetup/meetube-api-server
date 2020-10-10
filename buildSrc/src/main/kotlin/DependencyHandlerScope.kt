@@ -29,3 +29,7 @@ fun DependencyHandlerScope.microsoftCognitiveServices(
 fun DependencyHandlerScope.apacheHttpClient(
     version: String = Ver.apacheHttpClient
 ) = "org.apache.httpcomponents:httpclient:$version"
+
+fun DependencyHandlerScope.postgres(
+    version: String = Ver.postgres
+) = "org.postgresql:postgresql:$version"

@@ -22,6 +22,10 @@ repositories {
 
 dependencies {
     implementation(springBoot("starter-web"))
+    implementation(springBoot("starter-data-jdbc"))
+    implementation(springBoot("starter-data-jpa"))
+    implementation(postgres())
+
     implementation(kotlin("stdlib-jdk8", Ver.kotlin))
     implementation(kotlin("reflect", Ver.kotlin))
     implementation(flyway("core"))

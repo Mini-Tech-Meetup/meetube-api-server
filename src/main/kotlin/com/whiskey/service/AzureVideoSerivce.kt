@@ -25,7 +25,7 @@ class AzureVideoSerivce {
         val apiKey = AzureKey.videoIndexerKey;
         var apiUrl = "https://api.videoindexer.ai/${location}/Accounts/${accountId}";
 
-        val header = mapOf<String,String>(
+        val header = mapOf(
             "x-ms-client-request-id" to  "",
             "Ocp-Apim-Subscription-Key" to apiKey
         )
@@ -36,7 +36,7 @@ class AzureVideoSerivce {
     fun fileUpload(file: MultipartFile) {
 
         getAccessToken()?.let {
-            val parameter = mapOf<String,String>(
+            val parameter = mapOf(
                 "name" to UUID.randomUUID().toString(),
                 "accessToken" to it,
                 "description" to "description",
