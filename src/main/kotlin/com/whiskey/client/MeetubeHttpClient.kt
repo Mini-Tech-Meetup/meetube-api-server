@@ -7,7 +7,6 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.springframework.stereotype.Component
 import java.net.URI
@@ -23,7 +22,6 @@ class MeetubeHttpClient {
         val httpclient = HttpClients.createDefault()
         val uri = buildUri(uriString, params)
         val request = HttpPost(uri)
-        //val entity = getEntity(body)
 
         request.setHeaders(headers)
         request.entity = body

@@ -29,3 +29,20 @@ fun DependencyHandlerScope.microsoftCognitiveServices(
 fun DependencyHandlerScope.apacheHttpClient(
     version: String = Ver.apacheHttpClient
 ) = "org.apache.httpcomponents:httpclient:$version"
+
+fun DependencyHandlerScope.postgres(
+    version: String = Ver.postgres
+) = "org.postgresql:postgresql:$version"
+
+fun DependencyHandlerScope.queryDsl(
+    module: String,
+    version: String = Ver.queryDsl
+) = "com.querydsl:$module:$version"
+
+fun DependencyHandlerScope.reactor(
+    module: String
+) = "io.projectreactor:reactor-$module"
+
+fun DependencyHandlerScope.jacksonModule(
+    module: String
+) = "com.fasterxml.jackson.module:jackson-module-$module"

@@ -1,5 +1,6 @@
 package com.whiskey.repository
 
+import com.azure.core.http.HttpClient
 import com.azure.storage.blob.*
 import com.whiskey.utils.AzureKey
 import org.apache.http.impl.client.HttpClientBuilder
@@ -15,10 +16,11 @@ class AzureRepository {
         val connectString = AzureKey.StorageConnectionString
         const val storagePath = "./video/"
     }
-    fun Upload(stream : InputStream, len:Long, uuid:String) {
+
+    fun upload(stream : InputStream, len: Long, uuid: String) {
         print(connectString)
 
-        val blobServiceClient = BlobServiceClientBuilder().sasToken().connectionString(connectString).buildClient()
+        val blobServiceClient = BlobServiceClientBuilder().connectionString(connectString).buildClient()
         print(connectString)
 
         val containerClient = blobServiceClient.createBlobContainer(containerName)
@@ -27,8 +29,14 @@ class AzureRepository {
 
         val blobClient = containerClient.getBlobClient(fileName)
 
-
-        blobClient.upload(stream,len);
-
+        blobClient.upload(stream, len)
     }
+}
+
+fun main() {
+    val blobServiceClient = BlobServiceClientBuilder()
+        .connectionString(AzureRepository.connectString)
+        .httpClient(HttpClient.createDefault())
+        .buildClient()
+    println(blobServiceClient)
 }

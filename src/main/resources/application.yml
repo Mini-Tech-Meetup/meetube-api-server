@@ -5,6 +5,7 @@ spring:
   application:
     name: meetube-api-server
   datasource:
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${ENV_RDB_HOST}:${ENV_RDB_PORT}/${ENV_RDB_DATABASE}
     username: ${ENV_RDB_USER}
     password: ${ENV_RDB_PASSWORD}
@@ -25,4 +26,4 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info

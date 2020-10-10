@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version Ver.kotlin
     kotlin("kapt") version Ver.kotlin
     kotlin("plugin.spring") version Ver.kotlin
+    kotlin("plugin.allopen") version Ver.kotlin
     id(Plugin.ktLint) version Ver.ktlintPlugin
     id(Plugin.springDependencyManagement) version Ver.springDependencyManagement
     id(Plugin.springBoot) version Ver.springBoot
@@ -20,17 +21,36 @@ repositories {
     maven(url = "https://csspeechstorage.blob.core.windows.net/maven/")
 }
 
+allOpen {
+    annotation("javax.persistence.Entity")
+}
+
 dependencies {
     implementation(springBoot("starter-web"))
+    implementation(springBoot("starter-data-jdbc"))
+    implementation(springBoot("starter-data-jpa"))
+    implementation(reactor("core"))
+    implementation(postgres())
+    implementation(queryDsl("querydsl-core"))
+    implementation(queryDsl("querydsl-apt"))
+    implementation(queryDsl("querydsl-jpa"))
+
+    kapt(queryDsl("querydsl-apt", "${Ver.queryDsl}:jpa"))
+
     implementation(kotlin("stdlib-jdk8", Ver.kotlin))
     implementation(kotlin("reflect", Ver.kotlin))
     implementation(flyway("core"))
     implementation(apacheHttpClient())
+    implementation(group = "org.reactivestreams", name = "reactive-streams", version = "1.0.2", ext = "jar")
     implementation(group = "com.microsoft.cognitiveservices.speech", name = "client-sdk", version = "1.13.0", ext = "jar")
     implementation(group = "com.azure", name = "azure-storage-blob", version = "12.8.0", ext = "jar")
     implementation(group = "com.azure", name = "azure-core",version = "1.9.0",ext = "jar")
     implementation(group = "com.azure", name = "azure-storage-common",version = "12.8.0",ext = "jar")
     implementation(group = "com.azure", name = "azure-storage-queue",version = "12.6.0",ext = "jar")
+    implementation(group = "com.azure", name = "azure-core-http-netty",version = "1.5.4",ext = "jar")
+    implementation(group = "io.netty", name = "netty-all",version = "4.1.52.Final",ext = "jar")
+    implementation(group = "io.projectreactor.netty", name = "reactor-netty",version = "0.9.12.RELEASE",ext = "jar")
+    implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml",version = "2.11.2",ext = "jar")
     implementation(group = "org.apache.httpcomponents", name = "httpmime", version = "4.5.13", ext = "jar")
 
     testImplementation(springBoot("starter-test")) {
