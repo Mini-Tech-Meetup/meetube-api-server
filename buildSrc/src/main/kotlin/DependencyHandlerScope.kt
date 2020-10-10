@@ -25,3 +25,7 @@ fun DependencyHandlerScope.flyway(
 fun DependencyHandlerScope.microsoftCognitiveServices(
     version: String = Ver.microsoftCognitiveServices
 ) = "com.microsoft.cognitiveservices.speech:client-sdk:$version"
+
+fun DependencyHandlerScope.apacheHttpClient(
+    version: String = Ver.apacheHttpClient
+) = "org.apache.httpcomponents:httpclient:$version"

@@ -9,4 +9,5 @@ object Ver {
     const val mockk = "1.9.3"
     const val springBoot = "2.2.1.RELEASE"
     const val microsoftCognitiveServices = "1.13.0"
+    const val apacheHttpClient = "4.5.12"
 }

@@ -25,6 +25,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8", Ver.kotlin))
     implementation(kotlin("reflect", Ver.kotlin))
     implementation(flyway("core"))
+    implementation(apacheHttpClient())
     implementation(group = "com.microsoft.cognitiveservices.speech", name = "client-sdk", version = "1.13.0", ext = "jar")
 
 

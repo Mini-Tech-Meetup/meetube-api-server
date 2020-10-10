@@ -1,0 +1,50 @@
+package com.whiskey.client
+
+import org.apache.http.HttpEntity
+import org.apache.http.HttpMessage
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.utils.URIBuilder
+import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.HttpClients
+import org.springframework.stereotype.Component
+import java.net.URI
+
+@Component
+class MeetubeHttpClient {
+    fun post(
+        uriString: String,
+        params: Map<String, String>,
+        headers: Map<String, String>,
+        body: String
+    ): HttpEntity {
+        val httpclient = HttpClients.createDefault()
+        val uri = buildUri(uriString, params)
+        val request = HttpPost(uri)
+        val entity = getEntity(body)
+
+        request.setHeaders(headers)
+        request.entity = entity
+
+        val response = httpclient.execute(request)
+
+        return response.entity
+    }
+
+    /**
+     * @param uriString : ex) "https://api.videoindexer.ai/{location}/Accounts/{accountId}/Videos?name={name}"
+     * @param params: ex) mapOf("privacy" to "Private", "priority" to "Priority")
+     */
+    private fun buildUri(uriString: String, params: Map<String, String>): URI {
+        val builder = URIBuilder(uriString)
+        params.forEach { (param, value) -> builder.setParameter(param, value) }
+        return builder.build()
+    }
+
+    private fun getEntity(bodyString: String) = StringEntity(bodyString)
+
+    /**
+     * @param headers: ex) mapOf("Content-Type" to "multipart/form-data")
+     */
+    private fun HttpMessage.setHeaders(headers: Map<String, String>) = headers
+        .forEach { (param, value) -> this.setHeader(param, value) }
+}
