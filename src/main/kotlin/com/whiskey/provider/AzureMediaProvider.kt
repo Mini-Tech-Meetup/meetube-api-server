@@ -1,4 +1,3 @@
 package com.whiskey.provider
 
-class AzureMediaProvider {
-}
+class AzureMediaProvider

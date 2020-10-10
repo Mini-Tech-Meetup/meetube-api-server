@@ -7,5 +7,4 @@ import org.springframework.stereotype.Component
  * 2. Make a rest api client for stt, keyword extraction
  */
 @Component
-class AzureAiClient {
-}
+class AzureAiClient

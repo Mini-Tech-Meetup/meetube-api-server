@@ -4,7 +4,11 @@ import org.hibernate.HibernateException
 import org.hibernate.engine.spi.SharedSessionContractImplementor
 import org.hibernate.usertype.UserType
 import java.io.Serializable
-import java.sql.*
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.ResultSet
+import java.sql.SQLException
+import java.sql.Types
 
 @Suppress("UNCHECKED_CAST", "unused")
 class StringArrayType : UserType {
