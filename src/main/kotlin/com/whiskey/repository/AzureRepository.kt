@@ -1,11 +1,8 @@
 package com.whiskey.repository
 
-import com.azure.core.http.HttpClient
-import com.azure.storage.blob.*
+import com.azure.storage.blob.BlobServiceClientBuilder
 import com.whiskey.utils.AzureKey
-import org.apache.http.impl.client.HttpClientBuilder
 import org.springframework.stereotype.Repository
-import java.io.FileInputStream
 import java.io.InputStream
 
 
@@ -14,7 +11,7 @@ class AzureRepository {
     companion object{
         val containerName = AzureKey.StorageContainerName
         val connectString = AzureKey.StorageConnectionString
-        const val storagePath = "./video/"
+        val storagePath = "https://meetupmedia.blob.core.windows.net/${containerName}/"
     }
 
     fun upload(stream : InputStream, len: Long, uuid: String) {
@@ -23,20 +20,31 @@ class AzureRepository {
         val blobServiceClient = BlobServiceClientBuilder().connectionString(connectString).buildClient()
         print(connectString)
 
-        val containerClient = blobServiceClient.createBlobContainer(containerName)
+        val containerClient = blobServiceClient.getBlobContainerClient(containerName)
 
         val fileName = "$uuid.mp4"
 
         val blobClient = containerClient.getBlobClient(fileName)
 
         blobClient.upload(stream, len)
-    }
-}
 
-fun main() {
-    val blobServiceClient = BlobServiceClientBuilder()
-        .connectionString(AzureRepository.connectString)
-        .httpClient(HttpClient.createDefault())
-        .buildClient()
-    println(blobServiceClient)
+        val aaa ="asdasdf"
+        print(aaa)
+    }
+
+    fun upload(stream : String, uuid: String): String? {
+        print(connectString)
+
+        val blobServiceClient = BlobServiceClientBuilder().connectionString(connectString).buildClient()
+        print(connectString)
+
+        val containerClient = blobServiceClient.getBlobContainerClient(containerName)
+
+        val fileName = "$uuid.mp4"
+
+        val blobClient = containerClient.getBlobClient(fileName)
+
+        blobClient.uploadFromFile(stream)
+        return blobClient.blobUrl
+    }
 }

@@ -16,16 +16,13 @@ class MeetubeHttpClient {
     fun post(
         uriString: String,
         params: Map<String, String>,
-        headers: Map<String, String>,
-        body: HttpEntity
+        headers: Map<String, String>
     ): HttpEntity {
         val httpclient = HttpClients.createDefault()
         val uri = buildUri(uriString, params)
         val request = HttpPost(uri)
 
         request.setHeaders(headers)
-        request.entity = body
-
         val response = httpclient.execute(request)
 
         return response.entity
