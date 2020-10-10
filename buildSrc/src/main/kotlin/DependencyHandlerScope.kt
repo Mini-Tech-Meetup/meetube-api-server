@@ -33,3 +33,8 @@ fun DependencyHandlerScope.apacheHttpClient(
 fun DependencyHandlerScope.postgres(
     version: String = Ver.postgres
 ) = "org.postgresql:postgresql:$version"
+
+fun DependencyHandlerScope.queryDsl(
+    module: String,
+    version: String = Ver.queryDsl
+) = "com.querydsl:$module:$version"

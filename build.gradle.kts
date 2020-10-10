@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version Ver.kotlin
     kotlin("kapt") version Ver.kotlin
     kotlin("plugin.spring") version Ver.kotlin
+    kotlin("plugin.allopen") version Ver.kotlin
     id(Plugin.ktLint) version Ver.ktlintPlugin
     id(Plugin.springDependencyManagement) version Ver.springDependencyManagement
     id(Plugin.springBoot) version Ver.springBoot
@@ -20,11 +21,20 @@ repositories {
     maven(url = "https://csspeechstorage.blob.core.windows.net/maven/")
 }
 
+allOpen {
+    annotation("javax.persistence.Entity")
+}
+
 dependencies {
     implementation(springBoot("starter-web"))
     implementation(springBoot("starter-data-jdbc"))
     implementation(springBoot("starter-data-jpa"))
     implementation(postgres())
+    implementation(queryDsl("querydsl-core"))
+    implementation(queryDsl("querydsl-apt"))
+    implementation(queryDsl("querydsl-jpa"))
+
+    kapt(queryDsl("querydsl-apt", "${Ver.queryDsl}:jpa"))
 
     implementation(kotlin("stdlib-jdk8", Ver.kotlin))
     implementation(kotlin("reflect", Ver.kotlin))
