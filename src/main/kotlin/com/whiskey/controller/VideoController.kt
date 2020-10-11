@@ -3,7 +3,11 @@ package com.whiskey.controller
 import com.whiskey.entity.Video
 import com.whiskey.service.AzureVideoSerivce
 import com.whiskey.service.VideoService
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.PathVariable
 
 @RestController("/video")
 @CrossOrigin("*")

@@ -4,16 +4,17 @@ import com.whiskey.client.MeetubeHttpClient
 import com.whiskey.entity.Video
 import com.whiskey.repository.AzureRepository
 import com.whiskey.utils.AzureKey
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.*
-import java.util.*
-
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.BufferedReader
+import java.util.UUID
 
 @Service
-class AzureVideoSerivce (private  val azureRepository: AzureRepository){
+class AzureVideoSerivce(private val azureRepository: AzureRepository) {
 
     companion object {
         var accountId = AzureKey.videoIndexerUserId
@@ -25,21 +26,21 @@ class AzureVideoSerivce (private  val azureRepository: AzureRepository){
             "Ocp-Apim-Subscription-Key" to apiKey
         )
     }
+
     private val httpClient: MeetubeHttpClient = MeetubeHttpClient()
 
-    fun getVideoIndexerInfomation (oldVideo:Video) : Video {
-        return  oldVideo
+    fun getVideoIndexerInfomation(oldVideo: Video): Video {
+        return oldVideo
     }
 
-    fun fileUpload(file: MultipartFile) : Video {
+    fun fileUpload(file: MultipartFile): Video {
         val tempFile = File(file.originalFilename)
         tempFile.createNewFile()
         val fos = FileOutputStream(tempFile)
         fos.write(file.bytes)
         fos.close()
         val uuid = UUID.randomUUID().toString()
-        val azurePath = azureRepository.upload(tempFile.absolutePath,uuid)
-
+        val azurePath = azureRepository.upload(tempFile.absolutePath, uuid)
 
         val videoId = getAccessToken()?.let {
             val parameterForUpload = mapOf(
@@ -53,12 +54,12 @@ class AzureVideoSerivce (private  val azureRepository: AzureRepository){
 
             httpClient.post("$apiUrl/Videos", parameterForUpload, header)?.content?.let { println(getStreamToString(it)) }
             print("Upload Video")
-            val parameterForId = mapOf<String,String>(
+            val parameterForId = mapOf(
                 "externalId" to uuid,
                 "accessToken" to it
             )
-            val content = httpClient.get("${apiUrl}/Videos/GetIdByExternalId",parameterForId, header)?.entity?.content
-            content?.let (::getStreamToString)
+            val content = httpClient.get("$apiUrl/Videos/GetIdByExternalId", parameterForId, header)?.entity?.content
+            content?.let(::getStreamToString)
         }
 
         tempFile.delete()
