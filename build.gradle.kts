@@ -55,6 +55,7 @@ dependencies {
     implementation(group = "org.apache.httpcomponents", name = "httpmime", version = "4.5.13", ext = "jar")
     implementation(group = "javax.xml.bind", name = "jaxb-api", version = "2.3.0", ext = "jar")
     implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-jaxb-annotations", version = "2.11.3", ext = "jar")
+    implementation(group = "org.json", name = "json", version = "20190722", ext = "jar")
 
     testImplementation(springBoot("starter-test")) {
         exclude(group = "junit", module = "junit")
