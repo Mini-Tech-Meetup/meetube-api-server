@@ -18,7 +18,7 @@ data class Video(
 
     @Column(name = "keywords", columnDefinition = "text[]")
     @Type(type = "com.whiskey.entity.StringArrayType")
-    val keywords: Array<String>? = null,
+    val keywords: Array<String> = arrayOf(),
 
     @Column(name = "caption")
     val caption: String? = null,

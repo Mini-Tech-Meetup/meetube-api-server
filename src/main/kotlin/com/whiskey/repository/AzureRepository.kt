@@ -5,16 +5,15 @@ import com.whiskey.utils.AzureKey
 import org.springframework.stereotype.Repository
 import java.io.InputStream
 
-
 @Repository
 class AzureRepository {
-    companion object{
+    companion object {
         val containerName = AzureKey.StorageContainerName
         val connectString = AzureKey.StorageConnectionString
-        val storagePath = "https://meetupmedia.blob.core.windows.net/${containerName}/"
+        val storagePath = "https://meetupmedia.blob.core.windows.net/$containerName/"
     }
 
-    fun upload(stream : InputStream, len: Long, uuid: String) {
+    fun upload(stream: InputStream, len: Long, uuid: String) {
         print(connectString)
 
         val blobServiceClient = BlobServiceClientBuilder().connectionString(connectString).buildClient()
@@ -28,11 +27,11 @@ class AzureRepository {
 
         blobClient.upload(stream, len)
 
-        val aaa ="asdasdf"
+        val aaa = "asdasdf"
         print(aaa)
     }
 
-    fun upload(stream : String, uuid: String): String? {
+    fun upload(stream: String, uuid: String): String? {
         print(connectString)
 
         val blobServiceClient = BlobServiceClientBuilder().connectionString(connectString).buildClient()

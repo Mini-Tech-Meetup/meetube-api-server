@@ -4,16 +4,19 @@ import com.whiskey.client.MeetubeHttpClient
 import com.whiskey.entity.Video
 import com.whiskey.repository.AzureRepository
 import com.whiskey.utils.AzureKey
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.util.EntityUtils
+import org.json.JSONObject
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.*
-import java.util.*
-
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.BufferedReader
+import java.util.UUID
 
 @Service
-class AzureVideoSerivce (private  val azureRepository: AzureRepository){
+class AzureVideoSerivce(private val azureRepository: AzureRepository) {
 
     companion object {
         var accountId = AzureKey.videoIndexerUserId
@@ -25,21 +28,65 @@ class AzureVideoSerivce (private  val azureRepository: AzureRepository){
             "Ocp-Apim-Subscription-Key" to apiKey
         )
     }
+
     private val httpClient: MeetubeHttpClient = MeetubeHttpClient()
 
-    fun getVideoIndexerInfomation (oldVideo:Video) : Video {
-        return  oldVideo
+    fun getVideoIndexerInfomation(oldVideo: Video): Video {
+        val id = oldVideo.id
+
+        return getAccessToken()?.let {
+            // 옛날 비디오 아이디로 메타데이터 가져오기
+            val parameterForIndex = mapOf(
+                "accessToken" to it
+            )
+
+            val content = httpClient.get("${apiUrl}/Videos/${id}/Index", parameterForIndex, header)?.entity
+
+            if (content != null) {
+                val retSrc = EntityUtils.toString(content)
+                val videoIndex = JSONObject(retSrc)
+                val state = videoIndex.getString("state")
+                // 아직 처리되지 않았다면
+                if(state != "Processed"){
+                    return oldVideo
+                }
+                // 처리되었다면
+                else if(state == "Processed"){
+                    // thumbnail ID 가져옴
+                    val thumbnailId = videoIndex.getString("thumbnailId")
+                    //tumbnail ID 로 썸네일 스트림가져옴
+                    getAccessToken()?.let {
+                        val parameterForThumbnail = mapOf<String,String>(
+                            "thumbnailId" to thumbnailId,
+                            "format" to "Jpeg",
+                            "accessToken" to it
+                        )
+                        val thumbnail = httpClient.get("${apiUrl}/Videos/${id}/Thumbnails", parameterForThumbnail, header)?.entity?.content
+                    }
+                    //Get Video Captions 로 txt 로 설정해서 스크립트 다 가져옴
+                    getAccessToken()?.let {
+                        val parameterForCaption = mapOf<String, String>(
+                            "format" to "Txt",
+                            "accessToken" to it
+                        )
+                        val entity = httpClient.get("${apiUrl}/Videos/${id}/Captions", parameterForCaption, header)?.entity
+                        val script = EntityUtils.toString(entity)
+                    }
+                }
+            }
+
+            oldVideo
+        } ?: oldVideo
     }
 
-    fun fileUpload(file: MultipartFile) : Video {
+    fun fileUpload(file: MultipartFile): Video {
         val tempFile = File(file.originalFilename)
         tempFile.createNewFile()
         val fos = FileOutputStream(tempFile)
         fos.write(file.bytes)
         fos.close()
         val uuid = UUID.randomUUID().toString()
-        val azurePath = azureRepository.upload(tempFile.absolutePath,uuid)
-
+        val azurePath = azureRepository.upload(tempFile.absolutePath, uuid)
 
         val videoId = getAccessToken()?.let {
             val parameterForUpload = mapOf(
@@ -53,12 +100,12 @@ class AzureVideoSerivce (private  val azureRepository: AzureRepository){
 
             httpClient.post("$apiUrl/Videos", parameterForUpload, header)?.content?.let { println(getStreamToString(it)) }
             print("Upload Video")
-            val parameterForId = mapOf<String,String>(
+            val parameterForId = mapOf(
                 "externalId" to uuid,
                 "accessToken" to it
             )
-            val content = httpClient.get("${apiUrl}/Videos/GetIdByExternalId",parameterForId, header)?.entity?.content
-            content?.let (::getStreamToString)
+            val content = httpClient.get("$apiUrl/Videos/GetIdByExternalId", parameterForId, header)?.entity?.content
+            content?.let(::getStreamToString)
         }
 
         tempFile.delete()
@@ -66,7 +113,7 @@ class AzureVideoSerivce (private  val azureRepository: AzureRepository){
         return Video(
             videoId ?: uuid,
             file.originalFilename ?: "Untitled",
-            null,
+            arrayOf(),
             null,
             null,
             azurePath,

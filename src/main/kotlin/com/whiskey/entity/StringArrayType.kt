@@ -14,12 +14,12 @@ import java.sql.Types
 class StringArrayType : UserType {
 
     @Throws(HibernateException::class)
-    override fun assemble(cached: Serializable, owner: Any): Any {
+    override fun assemble(cached: Serializable, owner: Any): Any? {
         return deepCopy(cached)
     }
 
     @Throws(HibernateException::class)
-    override fun deepCopy(value: Any): Any {
+    override fun deepCopy(value: Any?): Any? {
         return value
     }
 
@@ -79,7 +79,7 @@ class StringArrayType : UserType {
     }
 
     @Throws(HibernateException::class)
-    override fun replace(original: Any, target: Any, owner: Any): Any {
+    override fun replace(original: Any, target: Any?, owner: Any): Any {
         return original
     }
 

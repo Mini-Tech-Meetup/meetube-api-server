@@ -23,5 +23,4 @@ class VideoService(
     fun findByTitlePartialMatching(title: String) = videoRepository.findByTitlePartialMatching(title)
 
     fun findContainsKeywords(keywords: Set<String>): List<Video> = videoRepository.findContainsKeywords(keywords)
-
 }
