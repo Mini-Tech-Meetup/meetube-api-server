@@ -16,7 +16,7 @@ class VideoRepository(
         val query = prepareQuery()
         query.where(
             Expressions.booleanTemplate(
-                "FUNCTION('fn_array_overlaps', {0}, string_to_array({1}, ','))=true",
+                "FUNCTION('fn_array_contains', {0}, string_to_array({1}, ','))=true",
                 QVideo.keywords,
                 keywords.joinToString(",")
             )

@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt") version Ver.kotlin
     kotlin("plugin.spring") version Ver.kotlin
     kotlin("plugin.allopen") version Ver.kotlin
+    id("org.jetbrains.kotlin.plugin.jpa") version Ver.kotlin
     id(Plugin.ktLint) version Ver.ktlintPlugin
     id(Plugin.springDependencyManagement) version Ver.springDependencyManagement
     id(Plugin.springBoot) version Ver.springBoot

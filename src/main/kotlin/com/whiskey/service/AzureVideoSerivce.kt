@@ -66,7 +66,7 @@ class AzureVideoSerivce (private  val azureRepository: AzureRepository){
         return Video(
             videoId ?: uuid,
             file.originalFilename ?: "Untitled",
-            null,
+            arrayOf(),
             null,
             null,
             azurePath,
