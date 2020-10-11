@@ -28,11 +28,10 @@ class VideoController(
         id: String
     ): Video {
         val video = videoService.findById(id).get()
-
         return video.takeIf { it.description != null }
             ?: run {
-                azureVideoSerivce.getVideoIndexerInfomation(video)
-                videoService.save(video)
+                val newVideo = azureVideoSerivce.getVideoIndexerInfomation(video)
+                videoService.save(newVideo)
             }
     }
 }

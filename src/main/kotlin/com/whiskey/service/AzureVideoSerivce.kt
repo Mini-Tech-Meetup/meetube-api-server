@@ -8,12 +8,8 @@ import org.apache.http.util.EntityUtils
 import org.json.JSONObject
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.BufferedReader
-import java.util.UUID
+import java.io.*
+import java.util.*
 
 @Service
 class AzureVideoSerivce(private val azureRepository: AzureRepository) {
@@ -52,26 +48,53 @@ class AzureVideoSerivce(private val azureRepository: AzureRepository) {
                 }
                 // 처리되었다면
                 else if(state == "Processed"){
+                    val insight = videoIndex.getJSONObject("summarizedInsights")
+                    val keywordsJson = insight.getJSONArray("keywords")
+                    val keywords = keywordsJson.map { (it as JSONObject).getString("name") }
                     // thumbnail ID 가져옴
-                    val thumbnailId = videoIndex.getString("thumbnailId")
+                    val thumbnailId = insight.getString("thumbnailId")
                     //tumbnail ID 로 썸네일 스트림가져옴
-                    getAccessToken()?.let {
+                    val thumbnailPath = getAccessToken()?.let {
                         val parameterForThumbnail = mapOf<String,String>(
                             "thumbnailId" to thumbnailId,
-                            "format" to "Jpeg",
+                            "format" to "Base64",
                             "accessToken" to it
                         )
                         val thumbnail = httpClient.get("${apiUrl}/Videos/${id}/Thumbnails", parameterForThumbnail, header)?.entity?.content
+                        val tempFile = File("$thumbnailId.jpg")
+                        tempFile.createNewFile()
+                        val fos = FileOutputStream(tempFile)
+                        val buffer = ByteArray(thumbnail?.available() as Int)
+                        thumbnail?.read(buffer)
+                        fos.write(buffer)
+                        fos.close()
+                        val azurePath = azureRepository.upload(tempFile.absolutePath, "$thumbnailId.jpg")
+                        tempFile.delete()
+                        azurePath
                     }
+
+
+
+
+
                     //Get Video Captions 로 txt 로 설정해서 스크립트 다 가져옴
-                    getAccessToken()?.let {
+                    val script = getAccessToken()?.let {
                         val parameterForCaption = mapOf<String, String>(
                             "format" to "Txt",
                             "accessToken" to it
                         )
                         val entity = httpClient.get("${apiUrl}/Videos/${id}/Captions", parameterForCaption, header)?.entity
                         val script = EntityUtils.toString(entity)
+                        print(script)
+                        script
                     }
+
+                    return oldVideo.copy(keywords = keywords.toTypedArray(),
+                        caption = script,
+                        thumbnailUrl = thumbnailPath,
+                        description = "Incomplete Sorry :("
+                        )
+
                 }
             }
 
@@ -86,7 +109,7 @@ class AzureVideoSerivce(private val azureRepository: AzureRepository) {
         fos.write(file.bytes)
         fos.close()
         val uuid = UUID.randomUUID().toString()
-        val azurePath = azureRepository.upload(tempFile.absolutePath, uuid)
+        val azurePath = azureRepository.upload(tempFile.absolutePath, "$uuid.mp4")
 
         val videoId = getAccessToken()?.let {
             val parameterForUpload = mapOf(

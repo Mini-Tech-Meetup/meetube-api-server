@@ -31,7 +31,7 @@ class AzureRepository {
         print(aaa)
     }
 
-    fun upload(stream: String, uuid: String): String? {
+    fun upload(stream: String, file: String): String? {
         print(connectString)
 
         val blobServiceClient = BlobServiceClientBuilder().connectionString(connectString).buildClient()
@@ -39,11 +39,11 @@ class AzureRepository {
 
         val containerClient = blobServiceClient.getBlobContainerClient(containerName)
 
-        val fileName = "$uuid.mp4"
+        val fileName = file
 
         val blobClient = containerClient.getBlobClient(fileName)
 
-        blobClient.uploadFromFile(stream)
+        blobClient.uploadFromFile(stream,true)
         return blobClient.blobUrl
     }
 }
